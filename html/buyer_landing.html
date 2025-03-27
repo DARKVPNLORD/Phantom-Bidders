@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Buyer Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/buyer_styles.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/responsiveness.css">
+    <link rel="stylesheet" href="../css/buyer_style.css">
+    <link rel="stylesheet" href="../css/logout_animation.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/include_logout.js" defer></script>
+    <script src="../script/buyer_script.js" defer></script>
+</head>
+<body class="buyer-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="buyer_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="bid_history.html"><i class="fas fa-history"></i> Bid History</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h2>Welcome, <span class="username-display">Buyer</span>!</h2>
+                <p>Find unique items and place your bids on our secure auction platform.</p>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="feature-card browse-auctions">
+                <div class="feature-icon">
+                    <i class="fas fa-search-dollar"></i>
+                </div>
+                <h3>Browse Auctions</h3>
+                <p>Explore active auctions and place your bids on items you like.</p>
+                <button class="feature-btn" onclick="window.location.href='browse_auctions.html'">
+                    <span>Browse Now</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3>Bid History</h3>
+                <p>View your bidding activity and track auction results.</p>
+                <button class="feature-btn" onclick="window.location.href='bid_history.html'">
+                    <span>View History</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logout Animation Container is now loaded via include_logout.js -->
+</body>
+</html> 

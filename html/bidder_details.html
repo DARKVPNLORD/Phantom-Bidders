@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Auction Bidders</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/seller_styles.css">
+    <link rel="stylesheet" href="../css/history_pages.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/include_logout.js" defer></script>
+    <script src="../script/bidder_details.js" defer></script>
+</head>
+<body class="seller-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="seller_landing.html" class="home-btn" title="Go to Seller Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="seller_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="sales_dashboard.html"><i class="fas fa-chart-line"></i> Sales Dashboard</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="history-main">
+        <div class="page-header">
+            <h2>Auction Bidders</h2>
+            <p>View all bidders for your auction listing</p>
+        </div>
+
+        <div class="auction-overview">
+            <div class="auction-details">
+                <div class="auction-image">
+                    <img id="auction-image" src="../assets/placeholder.png" alt="Auction Item">
+                </div>
+                <div class="auction-info">
+                    <h3 id="auction-title">Loading auction details...</h3>
+                    <div class="auction-meta">
+                        <div class="auction-meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="starting-price">₹0.00</span>
+                        </div>
+                        <div class="auction-meta-item">
+                            <i class="fas fa-gavel"></i>
+                            <span id="current-bid">₹0.00</span>
+                        </div>
+                        <div class="auction-meta-item">
+                            <i class="fas fa-user-friends"></i>
+                            <span id="total-bidders">0 Bidders</span>
+                        </div>
+                        <div class="auction-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="auction-status">Unknown</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-table-container">
+            <div class="history-table-header">
+                <h3>Bidding Activity</h3>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="table">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="view-btn" data-view="cards">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Bidder</th>
+                            <th>Bid Amount</th>
+                            <th>Bid Time</th>
+                            <th>Bid Increment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bidders-table-body">
+                        <!-- Bidder data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="empty-history" id="no-bidders-message">
+                <i class="fas fa-users-slash"></i>
+                <h3>No Bidders Yet</h3>
+                <p>This auction hasn't received any bids yet.</p>
+                <a href="sales_dashboard.html" class="primary-btn">Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+                Previous
+            </button>
+            <div class="page-numbers">
+                <span class="page-number active">1</span>
+            </div>
+            <button class="page-btn next-btn" disabled>
+                Next
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

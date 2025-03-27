@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Sales Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/seller_styles.css">
+    <link rel="stylesheet" href="../css/history_pages.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/sales_dashboard.js" defer></script>
+</head>
+<body class="seller-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="seller_landing.html" class="home-btn" title="Go to Seller Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="seller_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="sales_dashboard.html" class="active"><i class="fas fa-chart-line"></i> Sales Dashboard</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="history-main">
+        <div class="page-header">
+            <h2>Sales Dashboard</h2>
+            <p>Track your sales activity and auction results</p>
+        </div>
+
+        <div class="history-controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search in your dashboard...">
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="status-filter">Status:</label>
+                    <select id="status-filter">
+                        <option value="all">All Sales</option>
+                        <option value="active">Active Listings</option>
+                        <option value="sold">Sold Items</option>
+                        <option value="unsold">Unsold</option>
+                        <option value="payment-pending">Payment Pending</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date-filter">Date Range:</label>
+                    <select id="date-filter">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+                
+                <button class="export-btn">
+                    <i class="fas fa-download"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="history-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Listings</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Sold Items</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Active Listings</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Revenue</h3>
+                    <p class="stat-value">₹0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-table-container">
+            <div class="history-table-header">
+                <h3>Sales Activity</h3>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="table">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="view-btn" data-view="cards">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Start Price</th>
+                            <th>Sale Price</th>
+                            <th>Bids</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Sample row for styling reference -->
+                        <tr>
+                            <td class="item-cell">
+                                <div class="item-info">
+                                    <img src="../assets/placeholder.png" alt="Item" class="item-thumbnail">
+                                    <div>
+                                        <div class="item-title">Vintage Camera</div>
+                                        <div class="item-category electronics">electronics</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>₹5,000</td>
+                            <td>₹12,500</td>
+                            <td>8</td>
+                            <td>15 Nov, 2023</td>
+                            <td><span class="status-badge status-active">active</span></td>
+                            <td class="actions-cell">
+                                <button class="action-btn view-details-btn" title="View Details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="action-btn visibility-btn" title="Make Invisible to Buyers">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Listing">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="empty-history">
+                <i class="fas fa-box-open"></i>
+                <h3>No Listings Yet</h3>
+                <p>You haven't created any listings yet. Start selling by creating your first listing.</p>
+                <a href="create_listing.html" class="primary-btn">Create Listing</a>
+            </div>
+        </div>
+        
+        <div class="quick-insights">
+            <h3>Performance Insights</h3>
+            <div class="insights-container">
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Sales Trend</h4>
+                        <p>Start selling to see your sales trends.</p>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Top Buyers</h4>
+                        <p>No buyer data available yet.</p>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Best Performing Category</h4>
+                        <p>List items in different categories to see performance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+                Previous
+            </button>
+            <div class="page-numbers">
+                <span class="page-number active">1</span>
+            </div>
+            <button class="page-btn next-btn" disabled>
+                Next
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

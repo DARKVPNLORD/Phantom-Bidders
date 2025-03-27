@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Seller Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/seller_styles.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/logout_animation.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/seller_script.js" defer></script>
+</head>
+<body class="seller-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="seller_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="sales_dashboard.html"><i class="fas fa-chart-line"></i> Sales Dashboard</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h2>Welcome, <span class="username-display">Seller</span>!</h2>
+                <p>Manage your listings and track your sales on our secure auction platform.</p>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="feature-card create-listing">
+                <div class="feature-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3>Create Listing</h3>
+                <p>List your items for auction and set your desired starting price.</p>
+                <button class="feature-btn" onclick="window.location.href='create_listing.html'">
+                    <span>Start Listing</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Sales Dashboard</h3>
+                <p>Track your sales activity and manage your active auctions.</p>
+                <button class="feature-btn" onclick="window.location.href='sales_dashboard.html'">
+                    <span>View Dashboard</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logout Animation Container -->
+    <div class="logout-animation-container">
+        <div class="logout-animation">
+            <div class="wave-container">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+            </div>
+            <div class="logout-particles"></div>
+            <div class="logout-circle">
+                <span class="logout-checkmark">✓</span>
+            </div>
+            <div class="logout-message">
+                <h3 class="logout-title">Logged Out</h3>
+                <p class="logout-subtitle">You have been successfully logged out</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

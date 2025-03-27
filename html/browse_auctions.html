@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Browse Auctions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/buyer_styles.css">
+    <link rel="stylesheet" href="../css/browse_auctions.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/include_logout.js" defer></script>
+    <script src="../script/browse_auctions.js" defer></script>
+</head>
+<body class="buyer-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="buyer_landing.html" class="home-btn" title="Go to Buyer Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="buyer_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="bid_history.html"><i class="fas fa-history"></i> Bid History</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="browse-main">
+        <div class="page-header">
+            <h2>Browse Auctions</h2>
+            <p>Discover unique items and place your bids</p>
+        </div>
+
+        <div class="filter-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search auctions...">
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="category-filter">Category:</label>
+                    <select id="category-filter">
+                        <option value="all">All Categories</option>
+                        <option value="art">Art & Collectibles</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="jewelry">Jewelry & Watches</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="price-filter">Price Range:</label>
+                    <select id="price-filter">
+                        <option value="all">All Prices</option>
+                        <option value="0-1000">Under ₹1,000</option>
+                        <option value="1000-5000">₹1,000 - ₹5,000</option>
+                        <option value="5000-20000">₹5,000 - ₹20,000</option>
+                        <option value="20000+">Above ₹20,000</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="status-filter">Status:</label>
+                    <select id="status-filter">
+                        <option value="all">All Statuses</option>
+                        <option value="active">Active Auctions</option>
+                        <option value="ending-soon">Ending Soon</option>
+                        <option value="new">Newly Listed</option>
+                    </select>
+                </div>
+                
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>More Filters</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="auctions-container">
+            <div class="no-auctions-message">
+                <i class="fas fa-search"></i>
+                <h3>No Auctions Found</h3>
+                <p>There are currently no active auctions matching your search criteria.</p>
+                <p>Check back later or try adjusting your filters.</p>
+                <button class="reset-filters-btn">Reset Filters</button>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+                Previous
+            </button>
+            <div class="page-numbers">
+                <span class="page-number active">1</span>
+            </div>
+            <button class="page-btn next-btn" disabled>
+                Next
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Product Detail Popup -->
+    <div id="product-detail-popup" class="product-detail-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <button class="close-popup">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-body">
+                <div class="product-gallery">
+                    <div class="main-image-container">
+                        <img id="main-product-image" src="" alt="Product Image">
+                    </div>
+                    <div class="thumbnail-container" id="thumbnail-container">
+                        <!-- Thumbnails will be added dynamically -->
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-header">
+                        <h2 id="product-title">Loading...</h2>
+                        <div class="product-category">
+                            <span id="product-category">Category</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-price-info">
+                        <div class="current-bid">
+                            <span class="label">Current Bid:</span>
+                            <span id="current-bid" class="price">₹0</span>
+                        </div>
+                        <div class="bid-stats">
+                            <div class="stat">
+                                <i class="fas fa-gavel"></i>
+                                <span id="bid-count">0</span> bids
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-clock"></i>
+                                <span id="time-left">--:--:--</span> left
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="seller-info">
+                        <span class="label">Seller:</span>
+                        <span id="seller-name">Loading...</span>
+                        <span class="seller-rating">
+                            <i class="fas fa-star"></i>
+                            <span id="seller-rating">0.0</span>
+                        </span>
+                    </div>
+                    
+                    <div class="product-details">
+                        <div class="detail-group">
+                            <span class="label">Condition:</span>
+                            <span id="product-condition">Unknown</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="label">Starting Price:</span>
+                            <span id="starting-price">₹0</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="label">Bid Increment:</span>
+                            <span id="bid-increment">₹0</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="label">Auction Ends:</span>
+                            <span id="end-date">--/--/----</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <h3>Description</h3>
+                        <p id="product-description">Loading product description...</p>
+                    </div>
+                    
+                    <div class="shipping-info">
+                        <h3>Shipping & Pickup</h3>
+                        <div id="shipping-options">
+                            <div class="shipping-option">
+                                <i class="fas fa-shipping-fast"></i>
+                                <span>Shipping Available</span>
+                            </div>
+                            <div class="shipping-option">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Local Pickup Available</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="watch-button" class="watch-btn">
+                            <i class="far fa-bookmark"></i>
+                            Watch Item
+                        </button>
+                        <a id="place-bid-btn" href="#" class="place-bid-btn">
+                            <i class="fas fa-gavel"></i>
+                            Place Bid
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="popup-overlay"></div>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

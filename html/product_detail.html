@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Phantom Bidders</title>
+    <link rel="stylesheet" href="../css/product_detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="buyer-theme">
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <a href="../html/buyer_dashboard.html">
+                <i class="fas fa-gavel logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </a>
+        </div>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user"></i>
+                    <span id="userName">Loading...</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="../html/buyer_dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="../html/bid_history.html"><i class="fas fa-history"></i> Bid History</a>
+                    <a href="../html/settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="product-detail-container" id="product-detail-container">
+            <!-- Product Gallery -->
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img id="mainImage" src="../assets/placeholder.png" alt="Product Image">
+                </div>
+                <div class="thumbnail-gallery" id="thumbnailGallery">
+                    <!-- Thumbnails will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 id="productTitle">Loading...</h1>
+                    <span class="category-badge" id="productCategory">Loading...</span>
+                </div>
+
+                <!-- Bid Info -->
+                <div class="bid-info">
+                    <div>
+                        <span class="label">Current Bid</span>
+                        <span class="amount" id="currentBid">Loading...</span>
+                    </div>
+                    <div>
+                        <span class="label">Starting Price</span>
+                        <span class="amount" id="startingPrice">Loading...</span>
+                    </div>
+                    <div>
+                        <span class="label">Bid Increment</span>
+                        <span class="amount" id="bidIncrement">Loading...</span>
+                    </div>
+                    <div>
+                        <span class="label">Total Bids</span>
+                        <span class="amount" id="totalBids">Loading...</span>
+                    </div>
+                    <div class="time-left" id="timeLeft">
+                        Loading...
+                    </div>
+                </div>
+
+                <!-- Seller Info -->
+                <div class="seller-info">
+                    <img id="sellerImage" src="../assets/placeholder.png" alt="Seller">
+                    <div class="seller-details">
+                        <h3 id="sellerName">Loading...</h3>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="product-details">
+                    <div class="condition">
+                        <span class="label">Condition</span>
+                        <span id="productCondition">Loading...</span>
+                    </div>
+                    <div class="end-date">
+                        <span class="label">End Date</span>
+                        <span id="endDate">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="description">
+                    <h3>Description</h3>
+                    <p id="productDescription">Loading...</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="../html/browse_auctions.html" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Auctions</span>
+                    </a>
+                    <a href="../html/place_bid.html" class="place-bid-btn" id="placeBidBtn">
+                        <i class="fas fa-gavel"></i>
+                        <span>Place Bid</span>
+                    </a>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message" id="errorMessage" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Error loading auction details</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Phantom Bidders. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <span class="separator">|</span>
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span>
+                <a href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../script/api.js"></script>
+    <script src="../script/auth.js"></script>
+    <script src="../script/product_detail.js"></script>
+</body>
+</html> 

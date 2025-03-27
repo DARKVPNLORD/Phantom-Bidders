@@ -1,0 +1,803 @@
+/* Create Listing Page Styles */
+
+
+/* Page Header Styles */
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: fadeIn 1s ease;
+}
+
+.page-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+/* Listing Form Styles */
+.create-listing-container {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: slideIn 0.5s ease;
+}
+
+.listing-form {
+    background-color: rgba(30, 30, 30, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-section {
+    padding: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--text-light);
+    position: relative;
+    padding-left: 15px;
+}
+
+.form-section h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 20px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--primary-dark));
+    border-radius: 3px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: rgba(25, 25, 25, 0.7);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 77, 124, 0.2);
+    outline: none;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.char-count {
+    text-align: right;
+}
+
+/* Photo Upload Styles */
+.photo-upload-container {
+    margin-bottom: 20px;
+}
+
+.photo-upload {
+    border: 2px dashed #444;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.photo-upload:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(255, 77, 124, 0.05);
+}
+
+.photo-upload i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.photo-upload span {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.photo-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-note {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.photo-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.photo-preview-item {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    pointer-events: auto;
+}
+
+.photo-preview-item:hover {
+    transform: translateY(-5px);
+}
+
+.photo-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.delete-preview {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.photo-preview-item:hover .delete-preview {
+    opacity: 1;
+}
+
+.delete-preview:hover {
+    background-color: rgba(231, 76, 60, 0.8);
+}
+
+.cover-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.cover-image {
+    border: 2px solid var(--primary-color);
+}
+
+/* Existing image vs new image styles */
+.photo-preview-item.existing-image {
+    border-color: rgba(52, 152, 219, 0.5);
+}
+
+.photo-preview-item.new-image {
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+/* Checkbox & Radio Styles */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-container:last-child {
+    margin-bottom: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-container label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Dimensions Container Styles */
+.dimensions-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dimensions-container span {
+    color: var(--text-muted);
+}
+
+.dimensions-container input {
+    flex: 1;
+}
+
+/* Hidden Elements */
+.hidden {
+    display: none;
+}
+
+/* Form Buttons */
+.form-buttons {
+    padding: 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cancel-btn {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 1px solid #444;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.save-draft-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-draft-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.publish-btn {
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.publish-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 77, 124, 0.3);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .form-buttons {
+        flex-direction: column-reverse;
+    }
+    
+    .form-buttons button {
+        width: 100%;
+    }
+    
+    .page-header h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    max-width: 350px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification i {
+    margin-right: 10px;
+    font-size: 1.3rem;
+}
+
+.notification.success {
+    background-color: rgba(46, 204, 113, 0.9);
+    color: white;
+}
+
+.notification.error {
+    background-color: rgba(231, 76, 60, 0.9);
+    color: white;
+}
+
+/* Error state for form inputs */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: #e74c3c;
+}
+
+/* Photo count styles */
+.photo-count {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Loading overlay for edit mode */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.loading-spinner {
+    background-color: rgba(30, 30, 30, 0.9);
+    border-radius: 8px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loading-spinner i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    animation: spin 1.5s linear infinite;
+}
+
+.loading-spinner p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Edit Mode Badge */
+.edit-mode-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.25);
+    animation: fadeInDown 0.5s ease;
+}
+
+.edit-mode-badge i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Read-only field styles */
+.form-group input.read-only,
+.form-group select.read-only,
+.form-group textarea.read-only {
+    background-color: rgba(15, 15, 15, 0.8);
+    border-color: #333;
+    color: #777;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.form-group input.read-only:focus,
+.form-group select.read-only:focus,
+.form-group textarea.read-only:focus {
+    border-color: #333;
+    box-shadow: none;
+}
+
+/* Disabled photo upload container */
+.photo-upload-container.disabled .photo-upload {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: #333;
+}
+
+.photo-upload-container.disabled .photo-upload:hover {
+    border-color: #333;
+    background-color: transparent;
+}
+
+/* Read-only message for photos */
+.readonly-message {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.readonly-message i {
+    margin-right: 8px;
+}
+
+/* Badges for section headers */
+.readonly-badge, 
+.editable-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-weight: normal;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.readonly-badge {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.editable-badge {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+}
+
+/* Photo preview in edit mode */
+.photo-preview-item .delete-preview {
+    display: none; /* Hide delete buttons in edit mode */
+}
+
+/* Lock icon for immutable images */
+.lock-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ccc;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Remove functionality to reorder images in edit mode */
+.edit-mode .photo-preview-item {
+    pointer-events: none;
+}
+
+.edit-mode .photo-preview-item img {
+    pointer-events: none;
+}
+
+/* Edit info box */
+.edit-info {
+    background-color: rgba(41, 128, 185, 0.15);
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.edit-info p {
+    margin: 0 0 8px 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.edit-info p:last-child {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.edit-info i {
+    color: #3498db;
+    margin-right: 8px;
+}
+
+/* Emphasize editable fields */
+.edit-mode #item-description,
+.edit-mode #auction-duration,
+.edit-mode #shipping-option,
+.edit-mode #pickup-option,
+.edit-mode #shipping-cost {
+    border-color: rgba(46, 204, 113, 0.5);
+    background-color: rgba(46, 204, 113, 0.05);
+}
+
+.edit-mode #item-description:focus,
+.edit-mode #auction-duration:focus,
+.edit-mode #shipping-cost:focus {
+    border-color: #2ecc71;
+    box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+}
+
+/* Read-only button styles */
+.read-only-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(70%);
+    pointer-events: none;
+}
+
+.read-only-btn:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Read-only indicators and labels */
+.read-only-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    margin-left: 8px;
+    position: relative;
+    top: -1px;
+}
+
+.read-only-label {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Improve visibility of read-only fields - stronger overrides */
+.form-group input.read-only,
+.form-group select.read-only,
+.form-group textarea.read-only {
+    background-color: #2a2a2a !important;
+    border-color: #3a3a3a !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    padding-right: 30px !important; /* Make space for the lock icon */
+    opacity: 0.8 !important;
+    -webkit-text-fill-color: #777 !important;
+}
+
+/* Ensure read-only fields don't respond to hover/focus */
+.form-group input.read-only:hover,
+.form-group select.read-only:hover,
+.form-group textarea.read-only:hover,
+.form-group input.read-only:focus,
+.form-group select.read-only:focus,
+.form-group textarea.read-only:focus {
+    background-color: #2a2a2a !important;
+    border-color: #3a3a3a !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Make readonly elements impossible to interact with */
+.edit-mode .read-only {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* Dim but don't fully hide the reserve price and shipping details in edit mode */
+.edit-mode #reserve-price-container.hidden,
+.edit-mode #shipping-details.hidden {
+    display: block !important;
+    opacity: 0.7;
+    background-color: rgba(30, 30, 30, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 3px solid rgba(231, 76, 60, 0.5);
+    margin-top: 10px;
+}
+
+.edit-mode #reserve-price-container.hidden::before,
+.edit-mode #shipping-details.hidden::before {
+    content: 'Not applicable in this listing';
+    display: block;
+    font-size: 0.85rem;
+    color: #e74c3c;
+    margin-bottom: 5px;
+}
+
+/* Enhanced editable field styling */
+.editable-field {
+    border-color: #2ecc71 !important;
+    background-color: rgba(46, 204, 113, 0.05) !important;
+    box-shadow: 0 0 0 1px rgba(46, 204, 113, 0.2) !important;
+}
+
+.editable-field:focus {
+    border-color: #2ecc71 !important;
+    box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.3) !important;
+}
+
+.editable-field-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.editable-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: rgba(46, 204, 113, 0.8);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Special styling for checkbox containers that are editable */
+.editable-container {
+    background-color: rgba(46, 204, 113, 0.05);
+    border-radius: 5px;
+    padding: 5px 8px;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    position: relative;
+}
+
+.editable-container .editable-indicator {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Textarea with editable indicator */
+textarea.editable-field {
+    padding-right: 35px;
+}
+
+/* Enhance focus indication for editable fields */
+.editable-field:focus {
+    animation: editable-glow 2s infinite alternate;
+}
+
+@keyframes editable-glow {
+    0% { box-shadow: 0 0 0 1px rgba(46, 204, 113, 0.3); }
+    100% { box-shadow: 0 0 5px 1px rgba(46, 204, 113, 0.5); }
+} 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Buyer Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/buyer_styles.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/settings.js" defer></script>
+</head>
+<body class="buyer-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="buyer_landing.html" class="home-btn" title="Go to Buyer Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="buyer_settings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="bid_history.html"><i class="fas fa-history"></i> Bid History</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="settings-main">
+        <div class="settings-container">
+            <div class="settings-sidebar">
+                <h2>Settings</h2>
+                <ul class="settings-nav">
+                    <li class="active" data-tab="account"><i class="fas fa-user-circle"></i> Account</li>
+                </ul>
+            </div>
+            
+            <div class="settings-content">
+                <!-- Account Settings Tab -->
+                <div class="settings-tab active" id="account">
+                    <h3>Account Settings</h3>
+                    
+                    <div class="settings-section">
+                        <h4>Profile Information</h4>
+                        <form class="settings-form" id="profile-form">
+                            <div class="form-group">
+                                <label for="display-name">Display Name</label>
+                                <input type="text" id="display-name" class="user-name-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" class="user-email-input" readonly class="readonly-input">
+                                <small class="input-note">Email address cannot be changed</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="user-phone-input">
+                            </div>
+                            
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Change Password</h4>
+                        <form class="settings-form" id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password">
+                            </div>
+                            
+                            <button type="submit" class="save-btn">Update Password</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-section danger-zone">
+                        <h4>Danger Zone</h4>
+                        <button class="danger-btn"><i class="fas fa-trash-alt"></i> Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

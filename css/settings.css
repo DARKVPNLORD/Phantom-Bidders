@@ -1,0 +1,732 @@
+/* Settings Page Layout */
+.settings-main {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Home button styles */
+.home-btn {
+    position: absolute;
+    right: 250px;
+    top: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    background-color: rgba(30, 30, 30, 0.8);
+    color: #fff;
+    z-index: 10;
+}
+
+.buyer-theme .home-btn {
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.buyer-theme .home-btn:hover {
+    background-color: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
+.seller-theme .home-btn {
+    color: #ff4d7c;
+    border: 1px solid rgba(255, 77, 124, 0.3);
+}
+
+.seller-theme .home-btn:hover {
+    background-color: rgba(255, 77, 124, 0.15);
+    border-color: rgba(255, 77, 124, 0.6);
+}
+
+.settings-container {
+    display: flex;
+    gap: 30px;
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Sidebar Styles */
+.settings-sidebar {
+    width: 250px;
+    background-color: rgba(20, 20, 20, 0.8);
+    padding: 30px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.settings-sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.settings-nav {
+    list-style: none;
+    margin-bottom: 30px;
+    flex-grow: 1;
+}
+
+.settings-nav li {
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    border-left: 3px solid transparent;
+}
+
+.settings-nav li i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Theme-specific colors for sidebar items */
+.buyer-theme .settings-nav li:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.seller-theme .settings-nav li:hover {
+    background-color: rgba(255, 77, 124, 0.1);
+}
+
+.buyer-theme .settings-nav li.active {
+    background-color: rgba(255, 215, 0, 0.1);
+    border-left-color: #FFD700;
+    color: #FFD700;
+}
+
+.seller-theme .settings-nav li.active {
+    background-color: rgba(255, 77, 124, 0.1);
+    border-left-color: #ff4d7c;
+    color: #ff4d7c;
+}
+
+.back-button {
+    margin: 20px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: #fff;
+    background-color: rgba(50, 50, 50, 0.7);
+}
+
+.back-button i {
+    margin-right: 8px;
+}
+
+.buyer-theme .back-button:hover {
+    background-color: rgba(255, 215, 0, 0.15);
+}
+
+.seller-theme .back-button:hover {
+    background-color: rgba(255, 77, 124, 0.15);
+}
+
+/* Content Styles */
+.settings-content {
+    padding: 30px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.settings-tab {
+    display: none;
+}
+
+.settings-tab.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.settings-tab h3 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.buyer-theme .settings-tab h3:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.seller-theme .settings-tab h3:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #ff4d7c, #fd3b3b);
+}
+
+.settings-section {
+    background-color: rgba(40, 40, 40, 0.5);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+}
+
+/* Form Styles */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #ccc;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: rgba(50, 50, 50, 0.5);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+}
+
+.buyer-theme .form-group input:focus,
+.buyer-theme .form-group select:focus,
+.buyer-theme .form-group textarea:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.seller-theme .form-group input:focus,
+.seller-theme .form-group select:focus,
+.seller-theme .form-group textarea:focus {
+    border-color: #ff4d7c;
+    box-shadow: 0 0 0 2px rgba(255, 77, 124, 0.2);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-help {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* Button Styles */
+.save-btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.buyer-theme .save-btn {
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.seller-theme .save-btn {
+    background: linear-gradient(90deg, #ff4d7c, #fd3b3b);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 77, 124, 0.3);
+}
+
+.buyer-theme .save-btn:hover,
+.seller-theme .save-btn:hover {
+    transform: translateY(-3px);
+}
+
+.buyer-theme .save-btn:hover {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.seller-theme .save-btn:hover {
+    box-shadow: 0 6px 20px rgba(255, 77, 124, 0.4);
+}
+
+.danger-btn {
+    background-color: #ff3b3b;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.danger-btn i {
+    margin-right: 8px;
+}
+
+.danger-btn:hover {
+    background-color: #e62e2e;
+    transform: translateY(-2px);
+}
+
+.danger-zone {
+    border: 1px solid rgba(255, 59, 59, 0.3);
+}
+
+.add-btn {
+    background-color: #2a2a2a;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.add-btn i {
+    margin-right: 8px;
+}
+
+.buyer-theme .add-btn:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.seller-theme .add-btn:hover {
+    background-color: rgba(255, 77, 124, 0.1);
+    border-color: rgba(255, 77, 124, 0.3);
+}
+
+/* Toggle Switch */
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.toggle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #444;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.buyer-theme input:checked + .toggle-slider {
+    background-color: #FFD700;
+}
+
+.seller-theme input:checked + .toggle-slider {
+    background-color: #ff4d7c;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+/* Payment Cards */
+.payment-card {
+    display: flex;
+    align-items: center;
+    background-color: rgba(50, 50, 50, 0.5);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.payment-card-icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    width: 50px;
+    text-align: center;
+}
+
+.buyer-theme .payment-card-icon {
+    color: #FFD700;
+}
+
+.seller-theme .payment-card-icon {
+    color: #ff4d7c;
+}
+
+.payment-card-details {
+    flex-grow: 1;
+}
+
+.payment-card-details h5 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.payment-card-details p {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.payment-card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.edit-btn {
+    color: #777;
+}
+
+.delete-btn {
+    color: #ff6b6b;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Radio Group */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-label input {
+    margin-right: 10px;
+    width: auto;
+}
+
+/* File Upload */
+.file-upload {
+    display: flex;
+    align-items: center;
+    background-color: rgba(50, 50, 50, 0.5);
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #444;
+}
+
+.file-upload span {
+    flex-grow: 1;
+}
+
+.upload-btn {
+    border: none;
+    background-color: transparent;
+    color: #aaa;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.buyer-theme .upload-btn:hover {
+    color: #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.seller-theme .upload-btn:hover {
+    color: #ff4d7c;
+    background-color: rgba(255, 77, 124, 0.1);
+}
+
+/* Range Slider */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #444;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.buyer-theme .slider::-webkit-slider-thumb {
+    background: #FFD700;
+}
+
+.seller-theme .slider::-webkit-slider-thumb {
+    background: #ff4d7c;
+}
+
+.range-value {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Indented Form */
+.indent-form {
+    margin-left: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: none;
+}
+
+.indent-form.visible {
+    display: block;
+}
+
+/* Input Suffix */
+.input-suffix {
+    margin-left: 10px;
+    color: #aaa;
+}
+
+/* Add styles for readonly inputs */
+.readonly-input {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: not-allowed;
+    border-color: #444;
+    opacity: 0.8;
+}
+
+.readonly-input:focus {
+    box-shadow: none;
+    border-color: #444;
+}
+
+.input-note {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 992px) {
+    .settings-container {
+        flex-direction: column;
+    }
+    
+    .settings-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 20px;
+    }
+    
+    .settings-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .settings-nav li {
+        border-left: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-right: 5px;
+    }
+    
+    .buyer-theme .settings-nav li.active,
+    .seller-theme .settings-nav li.active {
+        border-left: none;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* Notification Badges */
+.notification-badge {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    background-color: rgba(40, 40, 40, 0.9);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: 500;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+}
+
+.notification-badge.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification-badge i {
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+.notification-badge.success {
+    background-color: rgba(39, 174, 96, 0.9);
+    border-color: rgba(39, 174, 96, 0.6);
+}
+
+.notification-badge.error {
+    background-color: rgba(231, 76, 60, 0.9);
+    border-color: rgba(231, 76, 60, 0.6);
+}
+
+.notification-badge.warning {
+    background-color: rgba(243, 156, 18, 0.9);
+    border-color: rgba(243, 156, 18, 0.6);
+}
+
+.notification-badge.info {
+    background-color: rgba(52, 152, 219, 0.9);
+    border-color: rgba(52, 152, 219, 0.6);
+}
+
+/* Buyer/Seller theme specific notification styles */
+.buyer-theme .notification-badge.success {
+    background-color: rgba(39, 174, 96, 0.9);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
+.seller-theme .notification-badge.success {
+    background-color: rgba(39, 174, 96, 0.9);
+    border-color: rgba(255, 77, 124, 0.6);
+}
+
+/* Fade-out animation for notifications */
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+} 

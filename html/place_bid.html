@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Place Bid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/buyer_styles.css">
+    <link rel="stylesheet" href="../css/place_bid.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/include_logout.js" defer></script>
+    <script src="../script/place_bid.js" defer></script>
+</head>
+<body class="buyer-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="buyer_landing.html" class="home-btn" title="Go to Buyer Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="buyer_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="bid_history.html"><i class="fas fa-history"></i> Bid History</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="bid-main">
+        <div class="back-link">
+            <a href="#" id="back-to-listing">
+                <i class="fas fa-arrow-left"></i> Back to Listing
+            </a>
+        </div>
+
+        <div class="page-header">
+            <h2>Place Your Bid</h2>
+            <p>Bid on this item to win the auction</p>
+        </div>
+
+        <div class="bid-container">
+            <div class="item-summary">
+                <div class="item-image">
+                    <img id="item-image" src="" alt="Item Image">
+                </div>
+                <div class="item-details">
+                    <h3 id="item-title">Loading...</h3>
+                    <div class="bid-info">
+                        <div class="info-group">
+                            <span class="label">Current Bid:</span>
+                            <span id="current-bid" class="value">₹0</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="label">Minimum Bid:</span>
+                            <span id="minimum-bid" class="value">₹0</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="label">Bid Increment:</span>
+                            <span id="bid-increment" class="value">₹0</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="label">Time Left:</span>
+                            <span id="time-left" class="value">--:--:--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="bid-form" class="bid-form">
+                <h3>Your Bid</h3>
+                <div class="form-group">
+                    <label for="bid-amount">Bid Amount (₹)</label>
+                    <div class="input-with-buttons">
+                        <button type="button" id="decrease-bid" class="bid-adjust-btn">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="bid-amount" min="0" step="1" required>
+                        <button type="button" id="increase-bid" class="bid-adjust-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <span id="bid-validation" class="validation-message"></span>
+                </div>
+
+                <div class="bid-guidelines">
+                    <h4><i class="fas fa-info-circle"></i> Bidding Guidelines</h4>
+                    <ul>
+                        <li>Your bid must be at least equal to the minimum bid amount</li>
+                        <li>Once placed, bids cannot be retracted</li>
+                        <li>You will be notified if someone outbids you</li>
+                        <li>If you win, you will be required to complete the purchase</li>
+                    </ul>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancel-bid" class="cancel-btn">Cancel</button>
+                    <button type="submit" id="submit-bid" class="submit-btn">Place Bid</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="bid-confirmation" class="bid-confirmation hidden">
+            <div class="confirmation-content">
+                <i class="fas fa-check-circle"></i>
+                <h3>Bid Placed Successfully!</h3>
+                <p>You are now the highest bidder for this item.</p>
+                <div class="confirmation-actions">
+                    <a href="browse_auctions.html" class="continue-shopping-btn">Continue Shopping</a>
+                    <a href="bid_history.html" class="view-bids-btn">View My Bids</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="bid-error" class="bid-error hidden">
+            <div class="error-content">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Bid Error</h3>
+                <p id="error-message">There was an error placing your bid.</p>
+                <button id="try-again-btn" class="try-again-btn">Try Again</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

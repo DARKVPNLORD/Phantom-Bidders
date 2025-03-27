@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Bid History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/buyer_styles.css">
+    <link rel="stylesheet" href="../css/history_pages.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/bid_history.js" defer></script>
+</head>
+<body class="buyer-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="buyer_landing.html" class="home-btn" title="Go to Buyer Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="buyer_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="bid_history.html" class="active"><i class="fas fa-history"></i> Bid History</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="history-main">
+        <div class="page-header">
+            <h2>Bid History</h2>
+            <p>Track your bidding activity and auction results</p>
+        </div>
+
+        <div class="history-controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search in your bids...">
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="status-filter">Status:</label>
+                    <select id="status-filter">
+                        <option value="all">All Bids</option>
+                        <option value="active">Active Bids</option>
+                        <option value="won">Won Auctions</option>
+                        <option value="outbid">Outbid</option>
+                        <option value="lost">Lost Auctions</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date-filter">Date Range:</label>
+                    <select id="date-filter">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+                
+                <button class="export-btn">
+                    <i class="fas fa-download"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="history-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Bids</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Won Auctions</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Active Bids</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Spent</h3>
+                    <p class="stat-value">₹0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-table-container">
+            <div class="history-table-header">
+                <h3>Your Bidding Activity</h3>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="table">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="view-btn" data-view="cards">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Your Bid</th>
+                            <th>Current Bid</th>
+                            <th>Bid Time</th>
+                            <th>Auction Ends</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- No history content -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="empty-history">
+                <i class="fas fa-history"></i>
+                <h3>No Bid History Found</h3>
+                <p>You haven't placed any bids yet.</p>
+                <a href="browse_auctions.html" class="primary-btn">Browse Auctions</a>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn prev-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+                Previous
+            </button>
+            <div class="page-numbers">
+                <span class="page-number active">1</span>
+            </div>
+            <button class="page-btn next-btn" disabled>
+                Next
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

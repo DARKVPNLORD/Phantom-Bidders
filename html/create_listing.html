@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Bidders - Create Listing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/seller_styles.css">
+    <link rel="stylesheet" href="../css/create_listing.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../script/auth.js" defer></script>
+    <script src="../script/api.js" defer></script>
+    <script src="../script/include_listing_animation.js" defer></script>
+    <script src="../script/create_listing.js" defer></script>
+</head>
+<body class="seller-theme">
+    <header>
+        <div class="header-nav">
+            <div class="logo-container">
+                <i class="fas fa-ghost logo-icon"></i>
+                <h1>Phantom Bidders</h1>
+            </div>
+        </div>
+        <a href="seller_landing.html" class="home-btn" title="Go to Seller Dashboard">
+            <i class="fas fa-house-user"></i>
+        </a>
+        <div class="profile-container">
+            <div class="profile-dropdown">
+                <button class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="username-display">My Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="seller_settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="sales_dashboard.html"><i class="fas fa-chart-line"></i> Sales Dashboard</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login_signup.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="listing-main">
+        <div class="page-header">
+            <h2>Create New Listing</h2>
+            <p>List your item for auction</p>
+        </div>
+
+        <div class="create-listing-container">
+            <form id="listing-form" class="listing-form">
+                <div class="form-section">
+                    <h3>Item Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="item-title">Item Title *</label>
+                        <input type="text" id="item-title" placeholder="Enter a descriptive title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="item-category">Category *</label>
+                        <select id="item-category" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <option value="art">Art & Collectibles</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="fashion">Fashion</option>
+                            <option value="home">Home & Garden</option>
+                            <option value="jewelry">Jewelry & Watches</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="item-condition">Condition *</label>
+                        <select id="item-condition" required>
+                            <option value="" disabled selected>Select condition</option>
+                            <option value="new">New</option>
+                            <option value="like-new">Like New</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="item-description">Description *</label>
+                        <textarea id="item-description" rows="5" placeholder="Provide a detailed description of your item..." required></textarea>
+                        <small class="char-count">0/2000 characters</small>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Photos</h3>
+                    
+                    <div class="photo-upload-container">
+                        <div class="photo-upload">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Photos</span>
+                            <input type="file" id="photo-upload" accept="image/*" multiple>
+                        </div>
+                        <small class="upload-note">Upload up to 8 photos. First photo will be the cover image.</small>
+                    </div>
+                    
+                    <div class="photo-preview-container"></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Auction Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="starting-price">Starting Price (₹) *</label>
+                        <input type="number" id="starting-price" min="1" placeholder="Enter starting bid amount" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="reserve-price-toggle">
+                            <label for="reserve-price-toggle">Set a Reserve Price</label>
+                        </div>
+                        <div id="reserve-price-container" class="hidden">
+                            <label for="reserve-price">Reserve Price (₹)</label>
+                            <input type="number" id="reserve-price" min="1" placeholder="Minimum price to sell">
+                            <small>Your item won't sell unless bidding reaches this price.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bid-increment">Bid Increment (₹) *</label>
+                        <input type="number" id="bid-increment" min="1" placeholder="Minimum bid increase" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="auction-duration">Auction Duration *</label>
+                        <select id="auction-duration" required>
+                            <option value="" disabled selected>Select duration</option>
+                            <option value="1">1 Day</option>
+                            <option value="3">3 Days</option>
+                            <option value="5">5 Days</option>
+                            <option value="7">7 Days</option>
+                            <option value="10">10 Days</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Shipping & Pickup</h3>
+                    
+                    <div class="form-group">
+                        <label>Shipping Options *</label>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="shipping-option">
+                            <label for="shipping-option">Offer Shipping</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="pickup-option">
+                            <label for="pickup-option">Offer Local Pickup</label>
+                        </div>
+                    </div>
+                    
+                    <div id="shipping-details" class="hidden">
+                        <div class="form-group">
+                            <label for="shipping-cost">Shipping Cost (₹)</label>
+                            <input type="number" id="shipping-cost" min="0" placeholder="Enter shipping cost">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="item-weight">Item Weight (kg)</label>
+                            <input type="number" id="item-weight" min="0" step="0.1" placeholder="Enter item weight">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="package-dimensions">Package Dimensions (cm)</label>
+                            <div class="dimensions-container">
+                                <input type="number" id="package-length" min="1" placeholder="Length">
+                                <span>x</span>
+                                <input type="number" id="package-width" min="1" placeholder="Width">
+                                <span>x</span>
+                                <input type="number" id="package-height" min="1" placeholder="Height">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="save-draft-btn">Save as Draft</button>
+                    <button type="submit" class="publish-btn">Publish Listing</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Phantom Bidders. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a> 
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <span class="separator">|</span> 
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
