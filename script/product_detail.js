@@ -33,7 +33,7 @@ const DEBUG_MODE = true;
 // Force test data mode - set to false to fetch real data from database
 const USE_TEST_DATA = false;
 
-// Initialize
+// Initialization
 async function initialize() {
     try {
         console.log('Initializing product detail page...');
@@ -83,7 +83,7 @@ async function initialize() {
     }
 }
 
-// Setup profile dropdown functionality
+// Profile Management
 function setupProfileDropdown() {
     if (!profileBtn || !profileDropdown) {
         console.warn('Profile dropdown elements not found');
@@ -119,7 +119,7 @@ function setupProfileDropdown() {
     }
 }
 
-// Check authentication
+// Authentication
 async function checkAuthentication() {
     try {
         // First check local storage
@@ -145,7 +145,7 @@ async function checkAuthentication() {
     }
 }
 
-// Custom implementation for getAuctionById for direct database access
+// API Data Fetching
 async function getAuctionById(auctionId) {
     try {
         console.log('Fetching auction with ID:', auctionId);

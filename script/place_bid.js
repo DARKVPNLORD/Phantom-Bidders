@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const bidIncrementElement = document.getElementById('bid-increment');
     const timeLeftElement = document.getElementById('time-left');
     
-    // Variables to store auction data
     let auctionId;
     let currentBid = 0;
     let minimumBid = 0;
@@ -30,19 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let auctionData;
     let redirectUrl;
     
-    // Get auction ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     auctionId = urlParams.get('id');
     
     if (!auctionId) {
-        // No auction ID provided, redirect to browse
         window.location.href = 'browse_auctions.html';
     }
     
-    // Load auction data
     loadAuction();
     
-    // Set up the back button to return to the auction
+    // Event Listeners
     backToListingBtn.addEventListener('click', function(e) {
         e.preventDefault();
         if (redirectUrl) {
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Bid adjustment buttons
     decreaseBidBtn.addEventListener('click', function() {
         let currentValue = parseInt(bidAmountInput.value) || minimumBid;
         if (currentValue > minimumBid) {
@@ -67,10 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
         validateBidAmount();
     });
     
-    // Validate bid on input change
     bidAmountInput.addEventListener('input', validateBidAmount);
     
-    // Cancel button
     cancelBidBtn.addEventListener('click', function() {
         if (redirectUrl) {
             window.location.href = redirectUrl;
@@ -79,12 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Try again button
     tryAgainBtn.addEventListener('click', function() {
         hideBidError();
     });
     
-    // Form submission
     bidForm.addEventListener('submit', function(e) {
         e.preventDefault();
         if (validateBidAmount()) {
@@ -92,114 +83,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Load auction data from the API
+    // Auction Loading
     async function loadAuction() {
         try {
-            // Show loading state
-            itemTitle.textContent = 'Loading...';
-            currentBidElement.textContent = '₹0';
-            minimumBidElement.textContent = '₹0';
-            bidIncrementElement.textContent = '₹0';
-            timeLeftElement.textContent = '--:--:--';
+            const auction = await getAuctionById(auctionId);
             
-            // Try to get the redirect URL from referrer
-            if (document.referrer) {
-                const referrer = new URL(document.referrer);
-                if (referrer.pathname.includes('product_detail.html') || 
-                    referrer.pathname.includes('browse_auctions.html')) {
-                    redirectUrl = document.referrer;
-                }
+            if (!auction) {
+                throw new Error('Auction not found');
             }
             
-            console.log(`Loading auction details for ID: ${auctionId}`);
+            console.log('Loaded auction data:', auction);
             
-            // Fetch auction data with direct API call to ensure fresh data
-            const apiUrl = `${window.location.origin}/api/auctions/${auctionId}`;
-            
-            // Make the request with auth token
-            const response = await fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`
-                }
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: response.statusText }));
-                throw new Error(errorData.message || `Server error: ${response.status}`);
-            }
-            
-            // Parse response data
-            const responseData = await response.json();
-            console.log('Auction data received:', responseData);
-            
-            // Extract the auction data from the response structure
-            let auctionData = null;
-            
-            if (responseData.success && responseData.listing) {
-                auctionData = responseData.listing;
-            } else if (responseData.listing) {
-                auctionData = responseData.listing;
-            } else if (responseData.auction) {
-                auctionData = responseData.auction;
-            } else if (typeof responseData === 'object' && !Array.isArray(responseData)) {
-                auctionData = responseData;
-            }
-            
-            if (!auctionData) {
-                throw new Error('Auction not found or invalid data format');
-            }
-            
-            // Validate required fields
-            if (!auctionData.title) {
-                throw new Error('Invalid auction data: Missing title');
-            }
-            
-            // Check if auction is active (check different status fields)
-            let isActive = true;
-            if (auctionData.status && auctionData.status !== 'active') {
-                isActive = false;
-            }
-            
-            if (!isActive) {
+            if (auction.status && auction.status !== 'active') {
                 throw new Error('This auction is no longer active');
             }
             
-            // Check end date from different possible fields
-            let endDateTime;
-            if (auctionData.endDate) {
-                endDateTime = new Date(auctionData.endDate);
-            } else if (auctionData.end_date) {
-                endDateTime = new Date(auctionData.end_date);
-            } else if (auctionData.endTime) {
-                endDateTime = new Date(auctionData.endTime);
-            }
+            const normalizedAuction = normalizeAuctionData(auction);
             
-            // Check if auction has ended
-            if (endDateTime && endDateTime < new Date()) {
-                console.log('End date comparison:', {
-                    endDateTime: endDateTime.toISOString(),
-                    currentTime: new Date().toISOString()
-                });
-                
-                // Add a buffer of 2 minutes to account for clock differences
-                const bufferTime = 2 * 60 * 1000; // 2 minutes in milliseconds
-                if (endDateTime.getTime() + bufferTime < new Date().getTime()) {
-                    throw new Error('This auction has ended');
-                }
-            }
+            updateAuctionDisplay(normalizedAuction);
             
-            // Store auction data globally
-            auctionData = normalizeAuctionData(auctionData);
-            
-            // Update UI with auction data
-            updateAuctionDisplay(auctionData);
-            
-            // Start countdown timer
+            endDate = normalizedAuction.endDate;
+            console.log('Setting end date for countdown:', endDate.toISOString());
             startCountdown();
             
-            // Set up real-time updates
             setupRealtimeUpdates();
         } catch (error) {
             console.error('Error loading auction:', error);
@@ -208,9 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Normalize auction data to consistent format
+    // Data Normalization
     function normalizeAuctionData(data) {
-        // Create a result object with defaults
         const result = {
             id: data._id || data.id || auctionId,
             title: data.title || 'Unknown Item',
@@ -223,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bidIncrement: 100
         };
         
-        // Handle images
         if (data.images) {
             if (Array.isArray(data.images)) {
                 result.images = data.images;
@@ -242,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
             result.images = ['../assets/placeholder.png'];
         }
         
-        // Get end date
         if (data.endDate) {
             result.endDate = new Date(data.endDate);
         } else if (data.end_date) {
@@ -250,18 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (data.endTime) {
             result.endDate = new Date(data.endTime);
         } else {
-            // Default: 1 day from now
             result.endDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         }
         
-        // Handle pricing from MongoDB structure
         if (data.pricing && typeof data.pricing === 'object') {
-            // MongoDB schema
             result.startPrice = parseFloat(data.pricing.startingPrice || 0);
             result.currentBid = parseFloat(data.pricing.currentBid || result.startPrice);
             result.bidIncrement = parseFloat(data.pricing.bidIncrement || 100);
         } else {
-            // Direct fields
             result.startPrice = parseFloat(data.startPrice || data.startingPrice || 0);
             result.currentBid = parseFloat(data.currentBid || result.startPrice);
             result.bidIncrement = parseFloat(data.bidIncrement || 100);
@@ -270,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return result;
     }
     
-    // Update auction display with data
+    // UI Update
     function updateAuctionDisplay(auction) {
         try {
             if (!auction) {
@@ -279,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Updating UI with auction data:', auction);
 
-            // Set item details
             if (auction.images && auction.images.length > 0) {
                 itemImage.src = auction.images[0];
             } else {
@@ -289,32 +187,27 @@ document.addEventListener('DOMContentLoaded', function() {
             itemImage.alt = auction.title;
             itemTitle.textContent = auction.title || 'Untitled Auction';
             
-            // Set bid information
             currentBid = parseFloat(auction.currentBid || 0);
             minimumBid = currentBid + parseFloat(auction.bidIncrement || 100);
             bidIncrement = parseFloat(auction.bidIncrement || 100);
             
-            // Update display with proper formatting
             currentBidElement.textContent = formatCurrency(currentBid);
             minimumBidElement.textContent = formatCurrency(minimumBid);
             bidIncrementElement.textContent = formatCurrency(bidIncrement);
             
-            // Set bid amount input
             bidAmountInput.value = minimumBid;
             bidAmountInput.min = minimumBid;
             bidAmountInput.step = bidIncrement;
             
-            // Set end date
             if (auction.endDate) {
                 endDate = new Date(auction.endDate);
+                console.log('Setting end date in updateAuctionDisplay:', endDate.toISOString());
             } else {
                 throw new Error('Auction end date not specified');
             }
             
-            // Enable form
             enableBidForm();
             
-            // Update time left
             updateTimeLeft();
         } catch (error) {
             console.error('Error updating auction display:', error);
@@ -323,41 +216,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Format currency with rupee symbol
+    // Formatting Helpers
     function formatCurrency(amount) {
-        // Convert to number if it's a string
         if (typeof amount === 'string') {
             amount = parseFloat(amount);
         }
         
-        // Check for null, undefined, NaN, or zero 
         if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
             return '₹0.00';
         }
         
-        // Format with two decimal places and commas for thousands
         return '₹' + formatNumber(amount);
     }
     
-    // Helper function to format numbers with commas
     function formatNumber(number) {
         if (number === null || number === undefined || isNaN(number)) {
             return '0.00';
         }
         
-        // Convert to number if it's a string
         if (typeof number === 'string') {
             number = parseFloat(number);
         }
         
-        // Format with two decimal places
         const withDecimals = number.toFixed(2);
         
-        // Add commas for thousands
         return withDecimals.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     
-    // Validate bid amount
+    // Bid Validation
     function validateBidAmount() {
         const bidAmount = parseInt(bidAmountInput.value);
         
@@ -371,44 +257,37 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
-        // Check if bid is a multiple of the increment
         const remainder = (bidAmount - currentBid) % bidIncrement;
         if (remainder !== 0) {
             bidValidation.textContent = `Bid must be in increments of ₹${formatCurrency(bidIncrement)}`;
             return false;
         }
         
-        // Valid bid
         bidValidation.textContent = '';
         return true;
     }
     
-    // Place a bid
+    // Bid Placement
     async function placeBid() {
         const bidAmount = parseInt(bidAmountInput.value);
         
-        // Disable form during submission
         disableBidForm();
         
         try {
-            // Check if auction is still active
             const updatedAuction = await getAuctionById(auctionId);
             if (!updatedAuction) {
                 throw new Error('Auction not found');
             }
             
-            // Check auction status - it could be in different properties depending on API structure
             const status = updatedAuction.status || 'active';
             if (status !== 'active') {
                 throw new Error('This auction is no longer active');
             }
             
-            // Check if auction has ended
             if (updatedAuction.endDate) {
                 const auctionEndDate = new Date(updatedAuction.endDate);
                 const now = new Date();
-                // Add a 2-minute buffer to account for clock differences
-                const bufferTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+                const bufferTime = 2 * 60 * 1000;
                 
                 console.log('Checking if auction has ended:', {
                     auctionEndDate: auctionEndDate.toISOString(),
@@ -421,7 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Extract current bid from MongoDB structure
             let currentHighestBid = 0;
             if (updatedAuction.pricing && updatedAuction.pricing.currentBid) {
                 currentHighestBid = parseFloat(updatedAuction.pricing.currentBid);
@@ -433,51 +311,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentHighestBid = parseFloat(updatedAuction.startPrice);
             }
             
-            // Extract bid increment from MongoDB structure
-            let bidIncrementAmount = 100;  // Default increment
+            let bidIncrementAmount = 100;
             if (updatedAuction.pricing && updatedAuction.pricing.bidIncrement) {
                 bidIncrementAmount = parseFloat(updatedAuction.pricing.bidIncrement);
             } else if (updatedAuction.bidIncrement) {
                 bidIncrementAmount = parseFloat(updatedAuction.bidIncrement);
             }
             
-            // Calculate minimum bid
             const minBid = currentHighestBid + bidIncrementAmount;
             
-            // Check if bid amount is still valid
             if (bidAmount < minBid) {
                 throw new Error(`Bid must be at least ₹${formatCurrency(minBid)}`);
             }
             
             console.log(`Placing bid of ₹${bidAmount} on auction ${auctionId}`);
             
-            // Place the bid using the API function (avoiding name collision)
             const response = await submitBidToAPI(auctionId, bidAmount);
             
             console.log('Bid response:', response);
             
-            // Show success message
             showBidConfirmation();
             
-            // Update UI with new bid
             currentBidElement.textContent = formatCurrency(bidAmount);
             minimumBidElement.textContent = formatCurrency(bidAmount + bidIncrementAmount);
         } catch (error) {
             console.error('Error placing bid:', error);
             showError(error.message || 'Unable to place bid. Please try again.');
         } finally {
-            // Re-enable form
             enableBidForm();
         }
     }
     
-    // Show error message
+    // UI Helpers
     function showError(message) {
         bidError.style.display = 'block';
         errorMessage.textContent = message;
         bidConfirmation.style.display = 'none';
         
-        // Update UI to show error state
         itemTitle.textContent = 'Error Loading Auction';
         currentBidElement.textContent = '--';
         minimumBidElement.textContent = '--';
@@ -485,7 +355,6 @@ document.addEventListener('DOMContentLoaded', function() {
         timeLeftElement.textContent = '--:--:--';
     }
     
-    // Disable bid form
     function disableBidForm() {
         bidForm.classList.add('disabled');
         submitBidBtn.disabled = true;
@@ -494,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
         increaseBidBtn.disabled = true;
     }
     
-    // Enable bid form
     function enableBidForm() {
         bidForm.classList.remove('disabled');
         submitBidBtn.disabled = false;
@@ -503,26 +371,20 @@ document.addEventListener('DOMContentLoaded', function() {
         increaseBidBtn.disabled = false;
     }
     
-    // Show bid confirmation
     function showBidConfirmation() {
         bidConfirmation.classList.remove('hidden');
     }
     
-    // Hide bid error
     function hideBidError() {
         bidError.classList.add('hidden');
     }
     
-    // Start countdown timer
+    // Countdown Timer
     function startCountdown() {
-        // Update immediately
         updateTimeLeft();
-        
-        // Then update every second
         setInterval(updateTimeLeft, 1000);
     }
     
-    // Update time left display
     function updateTimeLeft() {
         if (!endDate) {
             console.error('End date not set');
@@ -534,28 +396,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         let timeLeftMs = endDate - now;
         
-        // Add a small buffer (30 seconds) to account for minor clock differences
-        const bufferTime = 30 * 1000; // 30 seconds in milliseconds
+        const bufferTime = 30 * 1000;
         
         if (timeLeftMs <= -bufferTime) {
-            // Auction has definitely ended (more than buffer time has passed)
             console.log('Auction ended. Time difference:', timeLeftMs);
             timeLeftElement.textContent = 'Auction Ended';
             timeLeftElement.classList.add('urgent');
             
-            // Disable bidding if auction has ended
             disableBidForm();
             bidValidation.textContent = 'This auction has ended';
             return;
         } else if (timeLeftMs <= 0) {
-            // Within buffer zone - show "Ending now" instead of ended
             console.log('Auction ending. Time difference:', timeLeftMs);
             timeLeftElement.textContent = 'Ending now';
             timeLeftElement.classList.add('urgent');
             return;
         }
         
-        // Calculate days, hours, minutes, seconds
         const days = Math.floor(timeLeftMs / (1000 * 60 * 60 * 24));
         timeLeftMs -= days * (1000 * 60 * 60 * 24);
         
@@ -567,7 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const seconds = Math.floor(timeLeftMs / 1000);
         
-        // Format time left
         let timeLeftText = '';
         
         if (days > 0) {
@@ -576,7 +432,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         timeLeftText += `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
         
-        // Add urgent class if less than 1 hour left
         if (days === 0 && hours < 1) {
             timeLeftElement.classList.add('urgent');
         } else {
@@ -586,47 +441,38 @@ document.addEventListener('DOMContentLoaded', function() {
         timeLeftElement.textContent = timeLeftText;
     }
     
-    // Helper function to pad numbers with leading zero
     function padZero(num) {
         return num.toString().padStart(2, '0');
     }
     
+    // Real-time Updates
     function setupRealtimeUpdates() {
-        /* Poll for updates every 5 seconds */
         const pollInterval = setInterval(async () => {
             try {
                 const updatedAuction = await getAuctionById(auctionId);
                 if (updatedAuction) {
                     console.log("Real-time update received:", updatedAuction);
                     
-                    /* Normalize the updated auction data to ensure consistent format */
                     const normalizedAuction = normalizeAuctionData(updatedAuction);
                     
-                    /* Update current bid from normalized data */
                     currentBid = parseFloat(normalizedAuction.currentBid);
                     
-                    /* Get bid increment from normalized data */
                     bidIncrement = parseFloat(normalizedAuction.bidIncrement);
                     
-                    /* Calculate minimum bid properly using bid increment */
                     minimumBid = currentBid + bidIncrement;
                     
-                    /* Update UI */
                     currentBidElement.textContent = formatCurrency(currentBid);
                     minimumBidElement.textContent = formatCurrency(minimumBid);
                     bidIncrementElement.textContent = formatCurrency(bidIncrement);
                     
-                    /* Also update the input value if it is below the new minimum */
                     const currentInputValue = parseInt(bidAmountInput.value) || 0;
                     if (currentInputValue < minimumBid) {
                         bidAmountInput.value = minimumBid;
                     }
                     
-                    /* Update bid input constraints */
                     bidAmountInput.min = minimumBid;
                     bidAmountInput.step = bidIncrement;
                     
-                    /* Update the end date if it has changed */
                     if (normalizedAuction.endDate) {
                         const newEndDate = new Date(normalizedAuction.endDate);
                         if (!endDate || newEndDate.getTime() !== endDate.getTime()) {
@@ -638,12 +484,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                     
-                    /* Update time left */
                     updateTimeLeft();
                     
-                    /* Check if auction has ended with a generous buffer (5 minutes) */
                     const now = new Date();
-                    const bufferTime = 5 * 60 * 1000; /* 5 minute buffer */
+                    const bufferTime = 5 * 60 * 1000;
                     
                     if (normalizedAuction.status !== "active" || 
                         (normalizedAuction.endDate && new Date(normalizedAuction.endDate).getTime() + bufferTime < now.getTime())) {
@@ -664,28 +508,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (error) {
                 console.error("Error updating auction details:", error);
-                /* Do not clear interval on error to allow recovery */
             }
         }, 5000);
         
-        /* Clear interval when page is unloaded */
         window.addEventListener("beforeunload", () => {
             clearInterval(pollInterval);
         });
     }
 });
 
-// Handle API function name collision
-// The placeBid function in this file and the API file have the same name
-// Rename the API function reference to avoid collision
+// API Handling
 async function submitBidToAPI(auctionId, amount) {
     try {
         console.log(`Submitting bid to API: auction=${auctionId}, amount=${amount}`);
         
-        // Ensure endpoint starts with a slash
         const endpoint = `/auctions/${auctionId}/bid`;
         
-        // Construct the full URL
         const url = `${window.location.origin}/api${endpoint}`;
         console.log(`Making API request to: ${url}`);
         
@@ -697,7 +535,6 @@ async function submitBidToAPI(auctionId, amount) {
             body: JSON.stringify({ amount })
         };
 
-        // Add auth token to headers if available
         const token = localStorage.getItem('authToken');
         if (token) {
             options.headers['Authorization'] = `Bearer ${token}`;
@@ -708,7 +545,6 @@ async function submitBidToAPI(auctionId, amount) {
         
         const response = await fetch(url, options);
         
-        // Log response status
         console.log(`API Response status: ${response.status} ${response.statusText}`);
         
         if (!response.ok) {
@@ -724,6 +560,52 @@ async function submitBidToAPI(auctionId, amount) {
         }
     } catch (error) {
         console.error('API Request Error:', error);
+        throw error;
+    }
+}
+
+// Auction Data Fetching
+async function getAuctionById(auctionId) {
+    try {
+        console.log(`Fetching auction details for ID: ${auctionId}`);
+        
+        const apiUrl = `${window.location.origin}/api/auctions/${auctionId}`;
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: response.statusText }));
+            throw new Error(errorData.message || `Server error: ${response.status}`);
+        }
+        
+        const responseData = await response.json();
+        console.log('API response for auction:', responseData);
+        
+        let auctionData = null;
+        
+        if (responseData.success && responseData.listing) {
+            auctionData = responseData.listing;
+        } else if (responseData.listing) {
+            auctionData = responseData.listing;
+        } else if (responseData.auction) {
+            auctionData = responseData.auction;
+        } else if (typeof responseData === 'object' && !Array.isArray(responseData)) {
+            auctionData = responseData;
+        }
+        
+        if (!auctionData) {
+            throw new Error('Auction not found or invalid data format');
+        }
+        
+        return auctionData;
+    } catch (error) {
+        console.error('Error fetching auction:', error);
         throw error;
     }
 } 

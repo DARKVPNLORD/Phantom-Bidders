@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         signupToggle.classList.remove('active');
         loginForm.classList.remove('hidden');
         signupForm.classList.add('hidden');
-        });
+    });
 
     signupToggle.addEventListener('click', function() {
         signupToggle.classList.add('active');

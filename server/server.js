@@ -99,6 +99,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Access the application at: http://192.168.214.232:${PORT}`);
+  console.log('To find your IP address, run "ipconfig" on Windows or "ifconfig" on Mac/Linux');
 }); 
