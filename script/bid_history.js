@@ -384,43 +384,114 @@ document.addEventListener('DOMContentLoaded', function() {
         statCards[3].textContent = formatCurrency(totalSpent);
     }
     
-    // Export bid history to CSV
-    function exportBidHistory() {
-        if (!bidHistoryData || bidHistoryData.length === 0) {
-            alert('No bid history to export');
-            return;
-        }
+    // Export bid history to Excel
+    async function exportBidHistory() {
+        const exportBtn = document.querySelector('.export-btn');
+        const originalBtnContent = exportBtn.innerHTML;
         
-        // Create CSV content
-        let csvContent = 'Item,Your Bid,Current Bid,Bid Time,Auction Ends,Status\n';
-        
-        bidHistoryData.forEach(bid => {
-            // Determine status
-            let status = '';
-            if (bid.bid.isHighestBidder) {
-                status = new Date(bid.endDate) < new Date() ? 'Won' : 'Winning';
-            } else {
-                status = new Date(bid.endDate) < new Date() ? 'Lost' : 'Outbid';
+        try {
+            // Show loading state on export button
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+            exportBtn.disabled = true;
+
+            // Get all bids without pagination for export
+            const filters = {
+                search: searchInput.value.trim(),
+                status: statusFilter.value !== 'all' ? statusFilter.value : undefined,
+                dateRange: dateFilter.value !== 'all' ? dateFilter.value : undefined,
+                exportAll: true  // Special flag to get all bids for export
+            };
+
+            // Fetch data from API
+            const response = await getUserBidHistory(filters);
+            
+            if (!response || !response.bids || !Array.isArray(response.bids)) {
+                throw new Error('Invalid data received from server');
             }
-            
-            // Format dates
-            const bidTime = new Date(bid.bid.time).toLocaleString();
-            const endTime = new Date(bid.endDate).toLocaleString();
-            
-            // Add row to CSV
-            csvContent += `"${bid.title}",${bid.bid.amount},${bid.currentBid},"${bidTime}","${endTime}","${status}"\n`;
-        });
-        
-        // Create download link
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', 'bid_history.csv');
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+            const bids = response.bids;
+            const stats = {
+                totalBids: bids.length,
+                wonAuctions: bids.filter(bid => bid.status === 'won').length,
+                activeBids: bids.filter(bid => bid.status === 'active').length,
+                totalSpent: bids.reduce((sum, bid) => sum + (bid.status === 'won' ? parseFloat(bid.amount) : 0), 0)
+            };
+
+            // Prepare data for Excel
+            const worksheetData = [
+                // Headers
+                ['Item Title', 'Your Bid Amount', 'Current Bid', 'Bid Time', 'Auction End Date', 'Status']
+            ];
+
+            // Add bid data
+            bids.forEach(bid => {
+                worksheetData.push([
+                    bid.title || 'N/A',
+                    bid.amount ? `₹${parseFloat(bid.amount).toLocaleString('en-IN')}` : 'N/A',
+                    bid.currentBid ? `₹${parseFloat(bid.currentBid).toLocaleString('en-IN')}` : 'N/A',
+                    bid.bidTime ? new Date(bid.bidTime).toLocaleString('en-IN') : 'N/A',
+                    bid.endDate ? new Date(bid.endDate).toLocaleString('en-IN') : 'N/A',
+                    bid.status || 'N/A'
+                ]);
+            });
+
+            // Add summary stats
+            worksheetData.push([]);  // Empty row for spacing
+            worksheetData.push(['Summary Statistics']);
+            worksheetData.push(['Total Bids', stats.totalBids]);
+            worksheetData.push(['Won Auctions', stats.wonAuctions]);
+            worksheetData.push(['Active Bids', stats.activeBids]);
+            worksheetData.push(['Total Spent', `₹${stats.totalSpent.toLocaleString('en-IN')}`]);
+
+            // Create workbook and worksheet
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+
+            // Set column widths
+            const colWidths = [
+                {wch: 30},  // Item Title
+                {wch: 15},  // Your Bid Amount
+                {wch: 15},  // Current Bid
+                {wch: 20},  // Bid Time
+                {wch: 20},  // Auction End Date
+                {wch: 15}   // Status
+            ];
+            ws['!cols'] = colWidths;
+
+            // Add styling to header row
+            const headerRange = XLSX.utils.decode_range(ws['!ref']);
+            for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+                const address = XLSX.utils.encode_cell({ r: 0, c: C });
+                if (!ws[address]) continue;
+                ws[address].s = {
+                    font: { bold: true },
+                    fill: { fgColor: { rgb: "CCCCCC" } }
+                };
+            }
+
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Bid History');
+
+            // Generate filename with current date and filters
+            const date = new Date().toISOString().split('T')[0];
+            let fileName = `phantom_bidders_bid_history_${date}`;
+            if (filters.status) fileName += `_${filters.status}`;
+            if (filters.dateRange) fileName += `_${filters.dateRange}`;
+            fileName += '.xlsx';
+
+            // Save the file
+            XLSX.writeFile(wb, fileName);
+
+            // Show success notification
+            showNotification('Bid history exported successfully!', 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification(`Failed to export bid history: ${error.message}`, 'error');
+        } finally {
+            // Reset button state
+            exportBtn.innerHTML = originalBtnContent;
+            exportBtn.disabled = false;
+        }
     }
     
     // Format currency with rupee symbol

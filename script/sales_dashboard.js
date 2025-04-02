@@ -156,9 +156,130 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Export button
-    exportBtn.addEventListener('click', function() {
-        // In a real app, this would generate a CSV or PDF of the sales dashboard
-        alert('Export functionality would go here. This would typically generate a CSV or PDF of your sales dashboard which can be used for tax purposes or business analytics.');
+    exportBtn.addEventListener('click', async function() {
+        try {
+            // Show loading state
+            const exportText = exportBtn.querySelector('.export-text');
+            const exportLoading = exportBtn.querySelector('.export-loading');
+            exportText.style.display = 'none';
+            exportLoading.style.display = 'flex';
+            exportBtn.disabled = true;
+
+            // Get all listings without pagination for export
+            const filters = {
+                search: searchInput.value.trim(),
+                status: statusFilter.value !== 'all' ? statusFilter.value : undefined,
+                dateRange: dateFilter.value !== 'all' ? dateFilter.value : undefined,
+                exportAll: true  // Special flag to get all listings for export
+            };
+
+            // Fetch data from API
+            const response = await getSellerListings(filters);
+            
+            if (!response || !response.listings || !Array.isArray(response.listings)) {
+                throw new Error('Invalid data received from server');
+            }
+
+            const listings = response.listings;
+            const stats = response.stats || {
+                totalListings: listings.length,
+                soldItems: listings.filter(l => l.status === 'sold').length,
+                activeListings: listings.filter(l => l.status === 'active').length,
+                totalRevenue: listings.reduce((sum, l) => sum + (l.status === 'sold' ? l.currentPrice : 0), 0)
+            };
+
+            // Prepare data for Excel
+            const worksheetData = [
+                // Headers
+                ['Item Title', 'Category', 'Start Price', 'Current/Final Price', 'Total Bids', 'Start Date', 'End Date', 'Status']
+            ];
+
+            // Add listing data
+            listings.forEach(listing => {
+                // Get the highest bid amount
+                const highestBidAmount = listing.bids && listing.bids.length > 0 
+                    ? Math.max(...listing.bids.map(bid => parseFloat(bid.amount)))
+                    : null;
+
+                worksheetData.push([
+                    listing.title || 'N/A',
+                    listing.category || 'N/A',
+                    listing.pricing && listing.pricing.startingPrice ? 
+                        `₹${parseFloat(listing.pricing.startingPrice).toLocaleString('en-IN')}` : '₹0',
+                    // Show highest bid amount if available, otherwise show starting price
+                    highestBidAmount ? 
+                        `₹${highestBidAmount.toLocaleString('en-IN')}` : 
+                        (listing.pricing && listing.pricing.startingPrice ? 
+                            `₹${parseFloat(listing.pricing.startingPrice).toLocaleString('en-IN')}` : '₹0'),
+                    listing.bids ? listing.bids.length : 0,
+                    listing.startDate ? new Date(listing.startDate).toLocaleDateString('en-IN') : 'N/A',
+                    listing.endDate ? new Date(listing.endDate).toLocaleDateString('en-IN') : 'N/A',
+                    listing.status || 'N/A'
+                ]);
+            });
+
+            // Add summary stats
+            worksheetData.push([]);  // Empty row for spacing
+            worksheetData.push(['Summary Statistics']);
+            worksheetData.push(['Total Listings', stats.totalListings || 0]);
+            worksheetData.push(['Sold Items', stats.soldItems || 0]);
+            worksheetData.push(['Active Listings', stats.activeListings || 0]);
+            worksheetData.push(['Total Revenue', `₹${(stats.totalRevenue || 0).toLocaleString('en-IN')}`]);
+
+            // Create workbook and worksheet
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+
+            // Set column widths
+            const colWidths = [
+                {wch: 30},  // Item Title
+                {wch: 15},  // Category
+                {wch: 15},  // Start Price
+                {wch: 15},  // Current/Final Price
+                {wch: 12},  // Total Bids
+                {wch: 15},  // Start Date
+                {wch: 15},  // End Date
+                {wch: 15}   // Status
+            ];
+            ws['!cols'] = colWidths;
+
+            // Add styling to header row
+            const headerRange = XLSX.utils.decode_range(ws['!ref']);
+            for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+                const address = XLSX.utils.encode_cell({ r: 0, c: C });
+                if (!ws[address]) continue;
+                ws[address].s = {
+                    font: { bold: true },
+                    fill: { fgColor: { rgb: "CCCCCC" } }
+                };
+            }
+
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Sales Dashboard');
+
+            // Generate filename with current date and filters
+            const date = new Date().toISOString().split('T')[0];
+            let fileName = `phantom_bidders_sales_${date}`;
+            if (filters.status) fileName += `_${filters.status}`;
+            if (filters.dateRange) fileName += `_${filters.dateRange}`;
+            fileName += '.xlsx';
+
+            // Save the file
+            XLSX.writeFile(wb, fileName);
+
+            // Show success notification
+            showNotification('Sales data exported successfully!', 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification(`Failed to export sales data: ${error.message}`, 'error');
+        } finally {
+            // Reset button state
+            const exportText = exportBtn.querySelector('.export-text');
+            const exportLoading = exportBtn.querySelector('.export-loading');
+            exportText.style.display = 'inline';
+            exportLoading.style.display = 'none';
+            exportBtn.disabled = false;
+        }
     });
     
     // Fetch listings from the database
@@ -235,38 +356,56 @@ document.addEventListener('DOMContentLoaded', function() {
                     year: 'numeric' 
                 });
                 
-                // Format prices
-                const startingPrice = `₹${parseFloat(listing.pricing.startingPrice).toLocaleString('en-IN')}`;
-                const soldPrice = listing.winningBid 
-                    ? `₹${parseFloat(listing.winningBid.amount).toLocaleString('en-IN')}` 
-                    : '-';
-                
                 // Status badge class
                 let statusClass = '';
-                switch(listing.status) {
-                    case 'active':
-                        statusClass = 'status-active';
-                        break;
-                    case 'inactive':
-                        statusClass = 'status-inactive';
-                        break;
-                    case 'sold':
+                let statusText = '';
+                const now = new Date();
+                const hasEnded = endDate < now;
+
+                // Determine auction status
+                if (hasEnded) {
+                    if (listing.winningBid) {
                         statusClass = 'status-success';
-                        break;
-                    case 'unsold':
+                        statusText = 'Sold';
+                    } else if (listing.bids && listing.bids.length > 0) {
+                        statusClass = 'status-success';
+                        statusText = 'Ended with Bids';
+                    } else {
                         statusClass = 'status-danger';
-                        break;
-                    case 'draft':
-                        statusClass = 'status-draft';
-                        break;
-                    default:
-                        statusClass = 'status-pending';
+                        statusText = 'Ended without Bids';
+                    }
+                } else {
+                    switch(listing.status) {
+                        case 'active':
+                            statusClass = 'status-active';
+                            statusText = 'Active';
+                            break;
+                        case 'inactive':
+                            statusClass = 'status-inactive';
+                            statusText = 'Inactive';
+                            break;
+                        case 'draft':
+                            statusClass = 'status-draft';
+                            statusText = 'Draft';
+                            break;
+                        default:
+                            statusClass = 'status-pending';
+                            statusText = 'Pending';
+                    }
                 }
-                
-                // Is the listing visible to buyers?
-                const isVisible = listing.status === 'active';
-                const eyeIcon = isVisible ? 'fa-eye' : 'fa-eye-slash';
-                const eyeTitle = isVisible ? 'Make Invisible to Buyers' : 'Make Visible to Buyers';
+
+                // Get the highest bid or winning bid amount
+                const highestBid = listing.winningBid || 
+                    (listing.bids && listing.bids.length > 0 ? 
+                        listing.bids.reduce((max, bid) => 
+                            parseFloat(bid.amount) > parseFloat(max.amount) ? bid : max, listing.bids[0]) 
+                        : null);
+
+                // Format the current/final price
+                const currentPrice = highestBid ? 
+                    `₹${parseFloat(highestBid.amount).toLocaleString('en-IN')}` +
+                    (listing.winningBid ? ' (Won)' : '') : 
+                    '-';
                 
                 // Create row content
                 row.innerHTML = `
@@ -276,26 +415,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div>
                                 <div class="item-title">${listing.title}</div>
                                 <div class="item-category ${listing.category}">${listing.category}</div>
+                                ${hasEnded && highestBid ? 
+                                    `<div class="winning-bidder">Winner: ${highestBid.bidder.name || 'Anonymous'}</div>` 
+                                    : ''}
                             </div>
                         </div>
                     </td>
-                    <td>${startingPrice}</td>
-                    <td>${soldPrice}</td>
+                    <td>₹${parseFloat(listing.pricing.startingPrice).toLocaleString('en-IN')}</td>
+                    <td>${currentPrice}</td>
                     <td>${listing.bids ? listing.bids.length : 0}</td>
-                    <td>${formattedDate}</td>
-                    <td><span class="status-badge ${statusClass}">${listing.status}</span></td>
+                    <td>${formattedDate}${hasEnded ? ' (Ended)' : ''}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td class="actions-cell">
                         <button class="action-btn view-details-btn" data-id="${listing._id}" title="View Details">
                             <i class="fas fa-info-circle"></i>
                         </button>
-                        <button class="action-btn visibility-btn" data-id="${listing._id}" data-visible="${isVisible}" title="${eyeTitle}">
-                            <i class="fas ${eyeIcon}"></i>
-                        </button>
-                        ${listing.status !== 'sold' ? 
-                            `<button class="action-btn delete-btn" data-id="${listing._id}" title="Delete Listing">
+                        ${!hasEnded ? `
+                            <button class="action-btn visibility-btn" data-id="${listing._id}" data-visible="${listing.status === 'active'}" 
+                                title="${listing.status === 'active' ? 'Make Invisible to Buyers' : 'Make Visible to Buyers'}">
+                                <i class="fas ${listing.status === 'active' ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                            </button>
+                        ` : ''}
+                        ${!hasEnded && listing.status !== 'sold' ? `
+                            <button class="action-btn delete-btn" data-id="${listing._id}" title="Delete Listing">
                                 <i class="fas fa-trash"></i>
-                            </button>` : ''
-                        }
+                            </button>
+                        ` : ''}
                     </td>
                 `;
                 
@@ -309,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const visibilityBtn = row.querySelector('.visibility-btn');
                 if (visibilityBtn) {
-                    visibilityBtn.addEventListener('click', () => toggleVisibility(listing._id, !isVisible));
+                    visibilityBtn.addEventListener('click', () => toggleVisibility(listing._id, !hasEnded));
                 }
                 
                 const deleteBtn = row.querySelector('.delete-btn');

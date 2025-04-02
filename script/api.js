@@ -257,21 +257,62 @@ async function placeBid(auctionId, amount) {
 }
 
 /**
- * Get seller's listings
- * @param {object} filters - Optional filters (status, page, limit)
- * @returns {Promise} - Response from API containing seller's listings
+ * Get seller's listings with filters
+ * @param {object} filters - Filters for listings
+ * @param {string} filters.search - Search query
+ * @param {string} filters.status - Listing status filter
+ * @param {string} filters.dateRange - Date range filter
+ * @param {boolean} filters.exportAll - Whether to fetch all listings for export
+ * @returns {Promise} - Response from API containing listings and stats
  */
 async function getSellerListings(filters = {}) {
-    const queryParams = new URLSearchParams();
-    
-    Object.entries(filters).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-            queryParams.append(key, value);
+    try {
+        const queryParams = new URLSearchParams();
+        
+        // Handle filters
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                queryParams.append(key, value);
+            }
+        });
+
+        // If exporting, request all listings without pagination
+        if (filters.exportAll) {
+            queryParams.append('limit', '1000000'); // Large number to get all listings
+            queryParams.append('includeStats', 'true'); // Request stats with the listings
         }
-    });
-    
-    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    return await apiRequest(`/auctions/seller/listings${queryString}`);
+        
+        const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+        console.log(`Getting seller listings with query: ${queryString}`);
+        
+        const result = await apiRequest(`/auctions/seller/listings${queryString}`);
+        
+        // Validate and normalize response
+        if (!result) {
+            throw new Error('Empty response from listings API');
+        }
+
+        // Ensure listings array exists
+        if (!result.listings && Array.isArray(result)) {
+            return {
+                listings: result,
+                stats: null
+            };
+        }
+
+        if (!result.listings && result.data) {
+            result.listings = result.data;
+        }
+
+        if (!Array.isArray(result.listings)) {
+            throw new Error('Invalid listings data received');
+        }
+
+        return result;
+    } catch (error) {
+        console.error('Failed to get seller listings:', error);
+        throw error;
+    }
 }
 
 /**

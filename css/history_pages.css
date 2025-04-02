@@ -99,23 +99,38 @@
 .export-btn {
     display: flex;
     align-items: center;
-    background-color: rgba(25, 25, 25, 0.7);
-    color: var(--text-light);
-    border: 1px solid #444;
-    padding: 10px 15px;
-    border-radius: 8px;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.export-btn i {
-    margin-right: 8px;
-    color: var(--primary-color);
+.export-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
-.export-btn:hover {
-    background-color: rgba(35, 35, 35, 0.9);
-    border-color: var(--primary-color);
+.export-btn:disabled {
+    background-color: var(--gray-400);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.export-btn i {
+    font-size: 14px;
+}
+
+.export-btn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Stats Cards Styles */
