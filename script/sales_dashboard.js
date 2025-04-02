@@ -454,7 +454,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const visibilityBtn = row.querySelector('.visibility-btn');
                 if (visibilityBtn) {
-                    visibilityBtn.addEventListener('click', () => toggleVisibility(listing._id, !hasEnded));
+                    visibilityBtn.addEventListener('click', () => {
+                        const isCurrentlyVisible = visibilityBtn.getAttribute('data-visible') === 'true';
+                        toggleVisibility(listing._id, !isCurrentlyVisible);
+                    });
                 }
                 
                 const deleteBtn = row.querySelector('.delete-btn');
@@ -601,8 +604,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm(confirmMsg)) {
             // Show loading state on the button
             const button = document.querySelector(`.visibility-btn[data-id="${listingId}"]`);
+            let originalHTML = '';
+            
             if (button) {
-                const originalHTML = button.innerHTML;
+                originalHTML = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 button.disabled = true;
             }
@@ -610,8 +615,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Call API to toggle visibility
             toggleListingVisibility(listingId, makeVisible)
                 .then(response => {
-                    // Reload listings to reflect changes
-                    loadSellerListings();
+                    // Update button state without reloading
+                    if (button) {
+                        button.setAttribute('data-visible', makeVisible);
+                        button.innerHTML = `<i class="fas ${makeVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>`;
+                        button.title = makeVisible ? 'Make Invisible to Buyers' : 'Make Visible to Buyers';
+                        
+                        // Also update the status badge in this row
+                        const row = button.closest('tr');
+                        if (row) {
+                            const statusBadge = row.querySelector('.status-badge');
+                            if (statusBadge) {
+                                statusBadge.className = `status-badge ${makeVisible ? 'status-active' : 'status-inactive'}`;
+                                statusBadge.textContent = makeVisible ? 'Active' : 'Inactive';
+                            }
+                        }
+                        
+                        button.disabled = false;
+                    }
                     
                     // Show success message
                     const message = makeVisible 

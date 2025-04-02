@@ -624,6 +624,42 @@ input:checked + .toggle-slider:before {
     font-style: italic;
 }
 
+/* Form validation errors */
+.input-error {
+    color: #ff5555;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    animation: fadeIn 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.input-error::before {
+    content: "⚠️";
+    margin-right: 5px;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: #ff5555;
+    background-color: rgba(255, 85, 85, 0.05);
+}
+
+.buyer-theme .form-group input.error:focus,
+.buyer-theme .form-group select.error:focus,
+.buyer-theme .form-group textarea.error:focus {
+    border-color: #ff5555;
+    box-shadow: 0 0 0 2px rgba(255, 85, 85, 0.2);
+}
+
+.seller-theme .form-group input.error:focus,
+.seller-theme .form-group select.error:focus,
+.seller-theme .form-group textarea.error:focus {
+    border-color: #ff5555;
+    box-shadow: 0 0 0 2px rgba(255, 85, 85, 0.2);
+}
+
 /* Responsive Styles */
 @media screen and (max-width: 992px) {
     .settings-container {

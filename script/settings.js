@@ -237,19 +237,42 @@ document.addEventListener('DOMContentLoaded', async function() {
             submitBtn.textContent = 'Updating...';
             submitBtn.disabled = true;
             
+            // Reset previous error messages
+            const errorElements = this.querySelectorAll('.input-error');
+            errorElements.forEach(element => element.remove());
+            
             try {
                 const currentPassword = this.querySelector('#current-password').value;
                 const newPassword = this.querySelector('#new-password').value;
                 const confirmPassword = this.querySelector('#confirm-password').value;
                 
                 // Validate passwords
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    showNotification('All password fields are required.', 'error');
-                    return;
+                let hasError = false;
+                
+                if (!currentPassword) {
+                    showInputError(this.querySelector('#current-password'), 'Current password is required');
+                    hasError = true;
                 }
                 
-                if (newPassword !== confirmPassword) {
-                    showNotification('New passwords do not match.', 'error');
+                if (!newPassword) {
+                    showInputError(this.querySelector('#new-password'), 'New password is required');
+                    hasError = true;
+                } else if (newPassword.length < 6) {
+                    showInputError(this.querySelector('#new-password'), 'Password must be at least 6 characters');
+                    hasError = true;
+                }
+                
+                if (!confirmPassword) {
+                    showInputError(this.querySelector('#confirm-password'), 'Please confirm your new password');
+                    hasError = true;
+                } else if (newPassword !== confirmPassword) {
+                    showInputError(this.querySelector('#confirm-password'), 'Passwords do not match');
+                    hasError = true;
+                }
+                
+                if (hasError) {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
                     return;
                 }
                 
@@ -258,27 +281,30 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // Send password change request
                 try {
                     // Use the dedicated function instead of direct API request
-                    await updateUserPassword(currentPassword, newPassword);
+                    const result = await updateUserPassword(currentPassword, newPassword);
                     
-                    showNotification('Password updated successfully! Reloading page...', 'success');
-                    
-                    // Clear password fields
-                    this.querySelector('#current-password').value = '';
-                    this.querySelector('#new-password').value = '';
-                    this.querySelector('#confirm-password').value = '';
-                    
-                    // Reload the page after a short delay
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+                    if (result && result.success) {
+                        showNotification('Password updated successfully!', 'success');
+                        
+                        // Clear password fields
+                        this.querySelector('#current-password').value = '';
+                        this.querySelector('#new-password').value = '';
+                        this.querySelector('#confirm-password').value = '';
+                    } else {
+                        throw new Error(result.message || 'Unknown error occurred');
+                    }
                 } catch (passwordError) {
                     console.error('Password update error:', passwordError);
-                    showNotification(`Password update failed: ${passwordError.message}`, 'error');
                     
-                    // Reset fields on error for security
+                    // Check specific error messages
+                    if (passwordError.message.includes('incorrect')) {
+                        showInputError(this.querySelector('#current-password'), 'Current password is incorrect');
+                    } else {
+                        showNotification(`Password update failed: ${passwordError.message}`, 'error');
+                    }
+                    
+                    // Reset current password field for security
                     this.querySelector('#current-password').value = '';
-                    this.querySelector('#new-password').value = '';
-                    this.querySelector('#confirm-password').value = '';
                 }
             } catch (error) {
                 console.error('Error handling password form:', error);
@@ -291,6 +317,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     } else {
         console.error('Password form not found in the document');
+    }
+    
+    // Helper function to show input errors
+    function showInputError(inputElement, message) {
+        // Remove any existing error for this input
+        const parent = inputElement.parentElement;
+        const existingError = parent.querySelector('.input-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Create and add error message
+        const errorElement = document.createElement('div');
+        errorElement.className = 'input-error';
+        errorElement.textContent = message;
+        parent.appendChild(errorElement);
+        
+        // Highlight the input
+        inputElement.classList.add('error');
+        
+        // Add event listener to remove error when input changes
+        inputElement.addEventListener('input', function() {
+            const error = parent.querySelector('.input-error');
+            if (error) {
+                error.remove();
+                inputElement.classList.remove('error');
+            }
+        }, { once: true });
     }
     
     // Payment card action buttons

@@ -3,11 +3,30 @@ const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const os = require('os');  // Add os module to get network interfaces
 require('dotenv').config();
 
 // Initialize express
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Function to get local IP address
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const devName in interfaces) {
+    const iface = interfaces[devName];
+    for (let i = 0; i < iface.length; i++) {
+      const alias = iface[i];
+      if (alias.family === 'IPv4' && !alias.internal && alias.address !== '127.0.0.1') {
+        return alias.address;
+      }
+    }
+  }
+  return '127.0.0.1'; // Default to localhost if no other IP found
+}
+
+// Get the local IP address
+const localIP = getLocalIP();
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, '../public/uploads');
@@ -101,6 +120,6 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Access the application at: http://192.168.214.232:${PORT}`);
-  console.log('To find your IP address, run "ipconfig" on Windows or "ifconfig" on Mac/Linux');
+  console.log(`Access the application at: http://${localIP}:${PORT}`);
+  console.log(`Also available at: http://localhost:${PORT}`);
 }); 

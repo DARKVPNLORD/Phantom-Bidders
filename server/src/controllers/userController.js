@@ -139,6 +139,60 @@ const updateUserProfile = async (req, res) => {
 };
 
 /**
+ * @desc    Update user password
+ * @route   PUT /api/users/me/password
+ * @access  Private
+ */
+const updateUserPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Validate the request body
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Current password and new password are required' 
+      });
+    }
+    
+    // Find user with password field
+    const user = await User.findById(req.user._id).select('+password');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    // Verify current password
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    res.json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+  } catch (error) {
+    console.error('Password update error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to update password. Please try again.',
+      error: error.message
+    });
+  }
+};
+
+/**
  * @desc    Logout user
  * @route   POST /api/users/logout
  * @access  Private
@@ -152,5 +206,6 @@ module.exports = {
   loginUser,
   getUserProfile,
   updateUserProfile,
+  updateUserPassword,
   logoutUser
 }; 
